@@ -1,7 +1,12 @@
 package org.demolee;
 
+import java.util.Map;
+
+import org.demolee.tx.Transaction;
 import org.demolee.tx.TransactionRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -20,9 +25,19 @@ public class GreetingResourceTest {
     public void auditor() {
         RestAssured
                 .given()
-                .queryParam("name", "Werner")
-                .get();
+                .contentType("application/json")
+                .body(Map.of("hello", "world"))
+                .post()
+                .then()
+                .log()
+                .ifValidationFails();
+        var transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
         Mockito.verify(transactionRepository)
-                .logTransaction("sayHello", new Object[] { "Werner" });
+                .logTransaction(transactionCaptor.capture());
+        Transaction transaction = transactionCaptor.getValue();
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SAY_HI", transaction.getUseCase()),
+                () -> Assertions.assertEquals("sayHello", transaction.getName()),
+                () -> Assertions.assertEquals("{\"hello\":\"world\"}", transaction.getRawBody()));
     }
 }

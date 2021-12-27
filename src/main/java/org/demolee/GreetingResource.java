@@ -1,19 +1,19 @@
 package org.demolee;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.demolee.tx.Audited;
 
 @Path("greeting")
 public class GreetingResource {
 
-    @GET
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Audited(useCase = "SAY_HI")
-    public String sayHello(
-            @QueryParam("name") @DefaultValue("World") String name) {
-        return "Hello " + name;
+    public Object sayHello(Object body) {
+        return body;
     }
 }
