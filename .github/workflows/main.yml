@@ -1,0 +1,13 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on:
+      - ubuntu
+    steps:
+      run: mvn test
