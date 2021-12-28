@@ -10,4 +10,4 @@ jobs:
     runs-on:
       - ubuntu
     steps:
-      run: mvn test
+      - run: mvn test
