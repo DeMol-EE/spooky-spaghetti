@@ -4,6 +4,5 @@ package org.demolee.tx;
 public record Transaction (
     String getUseCase,
     String getName,
-    String getRawBody,
-    Object[] getParameters
+    String getRawBody
 ){}
