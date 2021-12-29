@@ -5,9 +5,7 @@ import java.util.Map;
 import org.demolee.tx.Transaction;
 import org.demolee.tx.TransactionRepository;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -34,13 +32,10 @@ public class GreetingResourceTest {
                 .ifValidationFails()
                 .and()
                 .body("hello", Matchers.is("world"));
-        var transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
         Mockito.verify(transactionRepository)
-                .logTransaction(transactionCaptor.capture());
-        Transaction transaction = transactionCaptor.getValue();
-        Assertions.assertAll(
-                () -> Assertions.assertEquals("SAY_HI", transaction.getUseCase()),
-                () -> Assertions.assertEquals("sayHello", transaction.getName()),
-                () -> Assertions.assertEquals("{\"hello\":\"world\"}", transaction.getRawBody()));
+                .logTransaction(new Transaction(
+                        "SAY_HI", 
+                        "sayHello",
+                        "{\"hello\":\"world\"}"));
     }
 }
